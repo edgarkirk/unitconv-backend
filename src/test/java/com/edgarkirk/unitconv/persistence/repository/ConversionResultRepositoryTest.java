@@ -19,10 +19,13 @@ class ConversionResultRepositoryTest {
 
     @Test
     void should_persistConversionResult_withGeneratedId() {
+        long before = conversionResultRepository.count();
+
         var saved = conversionResultRepository.save(new ConversionResult(null, BigDecimal.ONE, "metres", "feet", new BigDecimal("3.28084")));
 
         assertThat(saved.getId()).isNotNull();
         assertThat(conversionResultRepository.findById(saved.getId())).isPresent();
+        assertThat(conversionResultRepository.count()).isEqualTo(before + 1);
     }
 
     @Test

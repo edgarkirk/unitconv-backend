@@ -19,8 +19,11 @@ class UnitRepositoryTest {
     void should_returnAllSeededUnits_inDeterministicOrder() {
         var units = unitRepository.findAllByOrderByNameAsc();
 
+        assertThat(units).hasSize(6);
         assertThat(units).extracting(Unit::getName)
                 .containsExactly("feet", "gallons", "kilometres", "litres", "metres", "miles");
+        assertThat(units).extracting(Unit::getSystem)
+                .containsExactly("imperial", "imperial", "metric", "metric", "metric", "imperial");
     }
 
     @Test

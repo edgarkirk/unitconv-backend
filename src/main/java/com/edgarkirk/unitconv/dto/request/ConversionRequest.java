@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public record ConversionRequest(
-        @NotNull BigDecimal value,
-        @NotBlank String sourceUnit,
-        @NotBlank String targetUnit) {
+        @NotNull(message = "value is required.") BigDecimal value,
+        @NotBlank(message = "sourceUnit is required.") String sourceUnit,
+        @NotBlank(message = "targetUnit is required.") String targetUnit) {
 }

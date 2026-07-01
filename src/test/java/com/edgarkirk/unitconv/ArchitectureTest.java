@@ -24,4 +24,9 @@ class ArchitectureTest {
     static final ArchRule repositories_must_not_depend_on_services = noClasses()
             .that().resideInAPackage("..persistence.repository..")
             .should().dependOnClassesThat().resideInAPackage("..application..");
+
+    @ArchTest
+    static final ArchRule persistence_should_not_depend_on_dtos = noClasses()
+            .that().resideInAPackage("..persistence..")
+            .should().dependOnClassesThat().resideInAPackage("..dto..");
 }

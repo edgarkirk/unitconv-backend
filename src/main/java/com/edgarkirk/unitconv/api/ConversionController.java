@@ -24,12 +24,12 @@ class ConversionController {
     }
 
     @PostMapping("/convert")
-    ConversionResult convert(@Valid @RequestBody ConversionRequest request) {
-        throw new UnsupportedOperationException("Conversion endpoint is not implemented yet");
+    public ConversionResult convert(@Valid @RequestBody ConversionRequest request) {
+        return conversionService.convert(request);
     }
 
     @GetMapping("/units")
-    List<Unit> getUnits() {
-        throw new UnsupportedOperationException("Units endpoint is not implemented yet");
+    public List<Unit> getUnits() {
+        return conversionService.getSupportedUnits();
     }
 }
