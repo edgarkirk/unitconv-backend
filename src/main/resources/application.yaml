@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: unitconv
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/unitconv}
+    username: ${SPRING_DATASOURCE_USERNAME:unitconv}
+    password: ${SPRING_DATASOURCE_PASSWORD:unitconv}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+
+server:
+  port: ${SERVER_PORT:8080}
