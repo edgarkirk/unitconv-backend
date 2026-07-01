@@ -38,7 +38,7 @@ class ApiExceptionHandler {
             }
             return badRequest(new ErrorResponse(UUID.randomUUID(), "Invalid input: " + field + " has an invalid format", field));
         }
-        return badRequest(new ErrorResponse(UUID.randomUUID(), "Invalid input: request body is malformed", null));
+        return badRequest(new ErrorResponse(UUID.randomUUID(), readableMessage(exception), null));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -61,6 +61,19 @@ class ApiExceptionHandler {
     ResponseEntity<ErrorResponse> handleIncompatibleUnits(IncompatibleUnitsException exception) {
         return badRequest(new ErrorResponse(UUID.randomUUID(), exception.getMessage(), null));
     }
+
+    private String readableMessage(HttpMessageNotReadableException exception) {
+        Throwable mostSpecificCause = exception.getMostSpecificCause();
+        String detail = mostSpecificCause == null ? null : mostSpecificCause.getMessage();
+        if (detail == null || detail.isBlank()) {
+            detail = exception.getMessage();
+        }
+        if (detail == null || detail.isBlank()) {
+            detail = "request body is malformed";
+        }
+        return "Invalid input: " + detail;
+    }
+
 
     private ResponseEntity<ErrorResponse> badRequest(ErrorResponse errorResponse) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
