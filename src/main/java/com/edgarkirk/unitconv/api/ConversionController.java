@@ -1,8 +1,8 @@
 package com.edgarkirk.unitconv.api;
 
-import com.edgarkirk.unitconv.api.request.ConversionRequest;
-import com.edgarkirk.unitconv.api.response.ConversionResultResponse;
-import com.edgarkirk.unitconv.api.response.UnitResponse;
+import com.edgarkirk.unitconv.dto.request.ConversionRequest;
+import com.edgarkirk.unitconv.dto.response.ConversionResultResponse;
+import com.edgarkirk.unitconv.dto.response.UnitResponse;
 import com.edgarkirk.unitconv.service.ConversionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,12 +28,24 @@ public class ConversionController {
     @PostMapping("/convert")
     @Operation(summary = "Convert a numeric measurement from a source unit to a target unit")
     public ConversionResultResponse convert(@Valid @RequestBody ConversionRequest request) {
-        return conversionService.convert(request);
+        com.edgarkirk.unitconv.api.request.ConversionRequest serviceRequest = new com.edgarkirk.unitconv.api.request.ConversionRequest(
+                request.value(),
+                request.sourceUnit(),
+                request.targetUnit());
+        com.edgarkirk.unitconv.api.response.ConversionResultResponse serviceResponse = conversionService.convert(serviceRequest);
+        return new ConversionResultResponse(
+                serviceResponse.id(),
+                serviceResponse.inputValue(),
+                serviceResponse.sourceUnit(),
+                serviceResponse.targetUnit(),
+                serviceResponse.result());
     }
 
     @GetMapping("/units")
     @Operation(summary = "List supported units and their systems (metric/imperial)")
     public List<UnitResponse> listUnits() {
-        return conversionService.listSupportedUnits();
+        return conversionService.listSupportedUnits().stream()
+                .map(unit -> new UnitResponse(unit.id(), unit.name(), unit.system()))
+                .toList();
     }
 }

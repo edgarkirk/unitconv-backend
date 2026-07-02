@@ -1,6 +1,5 @@
-package com.edgarkirk.unitconv.api.request;
+package com.edgarkirk.unitconv.dto.request;
 
-import com.edgarkirk.unitconv.dto.request.StrictBigDecimalDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

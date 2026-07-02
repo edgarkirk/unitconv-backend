@@ -1,5 +1,6 @@
 package com.edgarkirk.unitconv.api;
 
+import com.edgarkirk.unitconv.dto.response.ValidationError;
 import com.edgarkirk.unitconv.service.exception.IncompatibleUnitsException;
 import com.edgarkirk.unitconv.service.exception.UnknownUnitException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
