@@ -3,6 +3,8 @@ package com.edgarkirk.unitconv.service;
 import com.edgarkirk.unitconv.api.dto.request.ConversionRequest;
 import com.edgarkirk.unitconv.api.dto.response.ConversionResult;
 import com.edgarkirk.unitconv.api.dto.response.Unit;
+import com.edgarkirk.unitconv.mapper.ConversionResultMapper;
+import com.edgarkirk.unitconv.mapper.UnitMapper;
 import com.edgarkirk.unitconv.service.dao.ConversionResultDao;
 import com.edgarkirk.unitconv.service.dao.UnitDao;
 import com.edgarkirk.unitconv.service.exception.IncompatibleUnitsException;
@@ -59,14 +61,14 @@ class ConversionServiceImpl implements ConversionService {
                         result));
 
         log.info("Converted {} {} to {} {}", request.value(), sourceUnit.getName(), result, targetUnit.getName());
-        return new ConversionResult(saved.getId(), saved.getInputValue(), saved.getSourceUnit(), saved.getTargetUnit(), saved.getResult());
+        return ConversionResultMapper.toResponse(saved);
     }
 
     @Override
     public List<Unit> listUnits() {
         return unitDao.findAll().stream()
                 .sorted((first, second) -> first.getName().compareTo(second.getName()))
-                .map(unit -> new Unit(unit.getId(), unit.getName(), unit.getSystem()))
+                .map(UnitMapper::toResponse)
                 .toList();
     }
 

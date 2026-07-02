@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @Tag(name = "Conversion API", description = "Measurement conversion endpoints")
-class ConversionController {
+public class ConversionController {
 
     private final ConversionService conversionService;
 
