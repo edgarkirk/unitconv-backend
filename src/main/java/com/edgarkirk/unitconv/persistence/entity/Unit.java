@@ -19,10 +19,10 @@ public class Unit {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 50)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private String system;
 
     protected Unit() {
@@ -43,14 +43,6 @@ public class Unit {
 
     public String getSystem() {
         return system;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setSystem(String system) {
-        this.system = system;
     }
 
     @Override

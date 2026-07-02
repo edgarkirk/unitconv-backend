@@ -11,8 +11,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.closeTo;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -35,6 +38,8 @@ class ConversionAcceptanceTest {
 
     @Test
     void should_return200AndPersistConversion_when_validMetresToFeetRequest() throws Exception {
+        long initialCount = conversionResultRepository.count();
+
         mockMvc.perform(post("/api/convert")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
@@ -46,6 +51,8 @@ class ConversionAcceptanceTest {
                 .andExpect(jsonPath("$.sourceUnit").value("metres"))
                 .andExpect(jsonPath("$.targetUnit").value("feet"))
                 .andExpect(jsonPath("$.result").isNumber());
+
+        assertThat(conversionResultRepository.count()).isEqualTo(initialCount + 1);
     }
 
     @Test
@@ -99,22 +106,19 @@ class ConversionAcceptanceTest {
     void should_returnAllSixUnits_when_listingSupportedUnits() throws Exception {
         mockMvc.perform(get("/api/units"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(matchesPattern("^[0-9a-fA-F-]{36}$")))
-                .andExpect(jsonPath("$[0].name").exists())
-                .andExpect(jsonPath("$[0].system").exists());
-    }
-
-    @Test
-    void should_returnUnitObjectsWithExpectedFields_when_listingSupportedUnits() throws Exception {
-        mockMvc.perform(get("/api/units"))
-                .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*].id").exists())
                 .andExpect(jsonPath("$[*].name").exists())
                 .andExpect(jsonPath("$[*].system").exists());
+
+        assertThat(unitRepository.findAll()).hasSize(6);
+        assertThat(unitRepository.findAll().stream().map(com.edgarkirk.unitconv.persistence.entity.Unit::getName).collect(Collectors.toSet()))
+                .isEqualTo(Set.of("metres", "feet", "kilometres", "miles", "litres", "gallons"));
     }
 
     @Test
     void should_persistConversionResultBeforeResponding_when_conversionSucceeds() throws Exception {
+        long initialCount = conversionResultRepository.count();
+
         mockMvc.perform(post("/api/convert")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
@@ -123,11 +127,13 @@ class ConversionAcceptanceTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").exists());
 
-        assertThat(conversionResultRepository.count()).isGreaterThan(0);
+        assertThat(conversionResultRepository.count()).isEqualTo(initialCount + 1);
     }
 
     @Test
     void should_return400AndNotPersist_when_sourceUnitIsUnsupported() throws Exception {
+        long initialCount = conversionResultRepository.count();
+
         mockMvc.perform(post("/api/convert")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
@@ -136,11 +142,13 @@ class ConversionAcceptanceTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Unsupported unit: yards"));
 
-        assertThat(conversionResultRepository.count()).isZero();
+        assertThat(conversionResultRepository.count()).isEqualTo(initialCount);
     }
 
     @Test
     void should_return400AndNotPersist_when_targetUnitIsUnsupported() throws Exception {
+        long initialCount = conversionResultRepository.count();
+
         mockMvc.perform(post("/api/convert")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
@@ -149,7 +157,7 @@ class ConversionAcceptanceTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Unsupported unit: chains"));
 
-        assertThat(conversionResultRepository.count()).isZero();
+        assertThat(conversionResultRepository.count()).isEqualTo(initialCount);
     }
 
     @Test

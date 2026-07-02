@@ -2,6 +2,8 @@ package com.edgarkirk.unitconv.service.dao;
 
 import com.edgarkirk.unitconv.persistence.entity.ConversionResult;
 import com.edgarkirk.unitconv.persistence.repository.ConversionResultRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -10,6 +12,8 @@ import java.util.UUID;
 @Repository
 public class ConversionResultDao {
 
+    private static final Logger log = LoggerFactory.getLogger(ConversionResultDao.class);
+
     private final ConversionResultRepository conversionResultRepository;
 
     public ConversionResultDao(ConversionResultRepository conversionResultRepository) {
@@ -17,10 +21,11 @@ public class ConversionResultDao {
     }
 
     public ConversionResult save(ConversionResult result) {
-        throw new UnsupportedOperationException("ConversionResultDao.save is not implemented yet");
+        log.info("Persisting conversion result for {} from {} to {}", result.getInputValue(), result.getSourceUnit(), result.getTargetUnit());
+        return conversionResultRepository.save(result);
     }
 
     public Optional<ConversionResult> findById(UUID id) {
-        throw new UnsupportedOperationException("ConversionResultDao.findById is not implemented yet");
+        return conversionResultRepository.findById(id);
     }
 }

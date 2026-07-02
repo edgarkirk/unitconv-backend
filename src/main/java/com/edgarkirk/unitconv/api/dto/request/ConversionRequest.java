@@ -8,9 +8,9 @@ import java.math.BigDecimal;
 
 public record ConversionRequest(
         @Schema(description = "Numeric value to convert")
-        @NotNull BigDecimal value,
+        @NotNull(message = "Missing required field: value") BigDecimal value,
         @Schema(description = "Source unit name")
-        @NotBlank String sourceUnit,
+        @NotBlank(message = "Missing required field: sourceUnit") String sourceUnit,
         @Schema(description = "Target unit name")
-        @NotBlank String targetUnit) {
+        @NotBlank(message = "Missing required field: targetUnit") String targetUnit) {
 }

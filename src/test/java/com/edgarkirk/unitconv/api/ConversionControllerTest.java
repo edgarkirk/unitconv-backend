@@ -4,17 +4,20 @@ import com.edgarkirk.unitconv.api.dto.request.ConversionRequest;
 import com.edgarkirk.unitconv.api.dto.response.ConversionResult;
 import com.edgarkirk.unitconv.api.dto.response.Unit;
 import com.edgarkirk.unitconv.service.ConversionService;
+import com.edgarkirk.unitconv.service.exception.IncompatibleUnitsException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -27,7 +30,7 @@ class ConversionControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private ConversionService conversionService;
 
     @Test
@@ -50,6 +53,10 @@ class ConversionControllerTest {
 
     @Test
     void should_return400ValidationError_when_unitsAreIncompatible() throws Exception {
+        doThrow(new IncompatibleUnitsException("metres", "gallons"))
+                .when(conversionService)
+                .convert(any(ConversionRequest.class));
+
         mockMvc.perform(post("/api/convert")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""

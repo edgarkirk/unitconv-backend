@@ -19,16 +19,16 @@ public class ConversionResult {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, precision = 19, scale = 6)
+    @Column(name = "input_value", nullable = false, precision = 19, scale = 6)
     private BigDecimal inputValue;
 
-    @Column(nullable = false)
+    @Column(name = "source_unit", nullable = false, length = 50)
     private String sourceUnit;
 
-    @Column(nullable = false)
+    @Column(name = "target_unit", nullable = false, length = 50)
     private String targetUnit;
 
-    @Column(nullable = false, precision = 19, scale = 6)
+    @Column(name = "result", nullable = false, precision = 19, scale = 6)
     private BigDecimal result;
 
     protected ConversionResult() {
