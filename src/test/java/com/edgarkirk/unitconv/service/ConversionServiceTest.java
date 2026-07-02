@@ -5,9 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.edgarkirk.unitconv.api.request.ConversionRequest;
-import com.edgarkirk.unitconv.api.response.ConversionResultResponse;
-import com.edgarkirk.unitconv.api.response.UnitResponse;
+import com.edgarkirk.unitconv.dto.request.ConversionRequest;
+import com.edgarkirk.unitconv.dto.response.ConversionResultResponse;
+import com.edgarkirk.unitconv.dto.response.UnitResponse;
 import com.edgarkirk.unitconv.persistence.entity.ConversionResult;
 import com.edgarkirk.unitconv.persistence.entity.Unit;
 import com.edgarkirk.unitconv.service.dao.ConversionResultDao;

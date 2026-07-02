@@ -1,8 +1,8 @@
 package com.edgarkirk.unitconv.service;
 
-import com.edgarkirk.unitconv.api.request.ConversionRequest;
-import com.edgarkirk.unitconv.api.response.ConversionResultResponse;
-import com.edgarkirk.unitconv.api.response.UnitResponse;
+import com.edgarkirk.unitconv.dto.request.ConversionRequest;
+import com.edgarkirk.unitconv.dto.response.ConversionResultResponse;
+import com.edgarkirk.unitconv.dto.response.UnitResponse;
 import java.util.List;
 
 public interface ConversionService {

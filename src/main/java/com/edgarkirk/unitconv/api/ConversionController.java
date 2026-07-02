@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Validated
 @RequestMapping("/api")
 @Tag(name = "Conversion API", description = "Measurement conversion endpoints")
 public class ConversionController {
@@ -28,24 +30,12 @@ public class ConversionController {
     @PostMapping("/convert")
     @Operation(summary = "Convert a numeric measurement from a source unit to a target unit")
     public ConversionResultResponse convert(@Valid @RequestBody ConversionRequest request) {
-        com.edgarkirk.unitconv.api.request.ConversionRequest serviceRequest = new com.edgarkirk.unitconv.api.request.ConversionRequest(
-                request.value(),
-                request.sourceUnit(),
-                request.targetUnit());
-        com.edgarkirk.unitconv.api.response.ConversionResultResponse serviceResponse = conversionService.convert(serviceRequest);
-        return new ConversionResultResponse(
-                serviceResponse.id(),
-                serviceResponse.inputValue(),
-                serviceResponse.sourceUnit(),
-                serviceResponse.targetUnit(),
-                serviceResponse.result());
+        return conversionService.convert(request);
     }
 
     @GetMapping("/units")
     @Operation(summary = "List supported units and their systems (metric/imperial)")
     public List<UnitResponse> listUnits() {
-        return conversionService.listSupportedUnits().stream()
-                .map(unit -> new UnitResponse(unit.id(), unit.name(), unit.system()))
-                .toList();
+        return conversionService.listSupportedUnits();
     }
 }

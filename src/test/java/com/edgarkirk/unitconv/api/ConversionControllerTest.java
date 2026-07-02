@@ -6,8 +6,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.edgarkirk.unitconv.api.response.ConversionResultResponse;
-import com.edgarkirk.unitconv.api.response.UnitResponse;
+import com.edgarkirk.unitconv.dto.response.ConversionResultResponse;
+import com.edgarkirk.unitconv.dto.response.UnitResponse;
 import com.edgarkirk.unitconv.service.ConversionService;
 import com.edgarkirk.unitconv.service.exception.IncompatibleUnitsException;
 import com.edgarkirk.unitconv.service.exception.UnknownUnitException;
