@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -16,11 +17,14 @@ public class Unit {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @Column(nullable = false)
+    @Column(name = "system", nullable = false)
     private String system;
+
+    public Unit() {
+    }
 
     public UUID getId() {
         return id;
@@ -44,5 +48,23 @@ public class Unit {
 
     public void setSystem(String system) {
         this.system = system;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Unit unit = (Unit) o;
+        return Objects.equals(name, unit.name)
+                && Objects.equals(system, unit.system);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, system);
     }
 }

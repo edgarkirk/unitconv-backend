@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
-public class UnitController {
+class UnitController {
 
     private final ConversionService conversionService;
 
-    public UnitController(ConversionService conversionService) {
+    UnitController(ConversionService conversionService) {
         this.conversionService = conversionService;
     }
 
     @GetMapping("/units")
-    public List<UnitResponse> getUnits() {
+    List<UnitResponse> getUnits() {
         return conversionService.getUnits();
     }
 }

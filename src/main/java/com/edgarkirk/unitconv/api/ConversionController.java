@@ -11,16 +11,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
-public class ConversionController {
+class ConversionController {
 
     private final ConversionService conversionService;
 
-    public ConversionController(ConversionService conversionService) {
+    ConversionController(ConversionService conversionService) {
         this.conversionService = conversionService;
     }
 
     @PostMapping("/convert")
-    public ConversionResultResponse convert(@Valid @RequestBody ConversionRequest request) {
+    ConversionResultResponse convert(@Valid @RequestBody ConversionRequest request) {
         return conversionService.convert(request);
     }
 }
