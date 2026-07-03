@@ -3,6 +3,8 @@ package com.edgarkirk.unitconv.service;
 import com.edgarkirk.unitconv.api.dto.request.ConversionRequest;
 import com.edgarkirk.unitconv.api.dto.response.ConversionResult;
 import com.edgarkirk.unitconv.api.dto.response.Unit;
+import com.edgarkirk.unitconv.mapper.ConversionResultMapper;
+import com.edgarkirk.unitconv.mapper.UnitMapper;
 import com.edgarkirk.unitconv.persistence.repository.ConversionResultRepository;
 import com.edgarkirk.unitconv.persistence.repository.UnitRepository;
 import com.edgarkirk.unitconv.service.exception.IncompatibleUnitException;
@@ -26,10 +28,17 @@ class ConversionServiceImpl implements ConversionService {
 
     private final UnitRepository unitRepository;
     private final ConversionResultRepository conversionResultRepository;
+    private final ConversionResultMapper conversionResultMapper;
+    private final UnitMapper unitMapper;
 
-    ConversionServiceImpl(UnitRepository unitRepository, ConversionResultRepository conversionResultRepository) {
+    ConversionServiceImpl(UnitRepository unitRepository,
+                          ConversionResultRepository conversionResultRepository,
+                          ConversionResultMapper conversionResultMapper,
+                          UnitMapper unitMapper) {
         this.unitRepository = unitRepository;
         this.conversionResultRepository = conversionResultRepository;
+        this.conversionResultMapper = conversionResultMapper;
+        this.unitMapper = unitMapper;
     }
 
     @Override
@@ -49,15 +58,13 @@ class ConversionServiceImpl implements ConversionService {
                         result));
 
         log.info("Converted {} from {} to {}", request.value(), source.getName(), target.getName());
-        return new ConversionResult(saved.getId(), saved.getInputValue(), saved.getSourceUnit(), saved.getTargetUnit(), saved.getResult());
+        return conversionResultMapper.toResponse(saved);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Unit> getSupportedUnits() {
-        return unitRepository.findAll().stream()
-                .map(unit -> new Unit(unit.getId(), unit.getName(), unit.getSystem()))
-                .toList();
+        return unitMapper.toResponses(unitRepository.findAll());
     }
 
     private com.edgarkirk.unitconv.persistence.entity.Unit resolveUnit(String unitName, String field) {

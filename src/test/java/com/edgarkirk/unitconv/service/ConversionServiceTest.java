@@ -9,6 +9,8 @@ import static org.mockito.Mockito.when;
 import com.edgarkirk.unitconv.api.dto.request.ConversionRequest;
 import com.edgarkirk.unitconv.persistence.entity.ConversionResult;
 import com.edgarkirk.unitconv.persistence.entity.Unit;
+import com.edgarkirk.unitconv.mapper.ConversionResultMapper;
+import com.edgarkirk.unitconv.mapper.UnitMapper;
 import com.edgarkirk.unitconv.persistence.repository.ConversionResultRepository;
 import com.edgarkirk.unitconv.persistence.repository.UnitRepository;
 import com.edgarkirk.unitconv.service.exception.IncompatibleUnitException;
@@ -16,9 +18,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -31,8 +33,16 @@ class ConversionServiceTest {
     @Mock
     private ConversionResultRepository conversionResultRepository;
 
-    @InjectMocks
     private ConversionServiceImpl conversionService;
+
+    @BeforeEach
+    void setUp() {
+        conversionService = new ConversionServiceImpl(
+                unitRepository,
+                conversionResultRepository,
+                new ConversionResultMapper(),
+                new UnitMapper());
+    }
 
     @Test
     void should_convertMetresToFeet_and_persistResult_when_requestIsValid() {
