@@ -9,6 +9,8 @@ import java.util.UUID;
 import com.edgarkirk.unitconv.api.dto.request.ConversionRequest;
 import com.edgarkirk.unitconv.api.dto.response.ConversionResultResponse;
 import com.edgarkirk.unitconv.api.dto.response.UnitResponse;
+import com.edgarkirk.unitconv.mapper.ConversionResultMapper;
+import com.edgarkirk.unitconv.mapper.UnitMapper;
 import com.edgarkirk.unitconv.persistence.entity.ConversionResult;
 import com.edgarkirk.unitconv.persistence.entity.Unit;
 import com.edgarkirk.unitconv.persistence.repository.ConversionResultRepository;
@@ -54,13 +56,13 @@ public class ConversionServiceImpl implements ConversionService {
                 targetUnit.name(),
                 convertedValue));
 
-        return new ConversionResultResponse(saved.id(), saved.inputValue(), saved.sourceUnit(), saved.targetUnit(), saved.result());
+        return ConversionResultMapper.toResponse(saved);
     }
 
     @Override
     public List<UnitResponse> listSupportedUnits() {
         return unitRepository.findAllByOrderByNameAsc().stream()
-                .map(unit -> new UnitResponse(unit.id(), unit.name(), unit.system()))
+                .map(UnitMapper::toResponse)
                 .toList();
     }
 
