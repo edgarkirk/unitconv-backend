@@ -3,6 +3,7 @@ package com.edgarkirk.unitconv.service;
 import com.edgarkirk.unitconv.api.dto.request.ConversionRequest;
 import com.edgarkirk.unitconv.api.dto.response.ConversionResultResponse;
 import com.edgarkirk.unitconv.api.dto.response.UnitResponse;
+import com.edgarkirk.unitconv.persistence.entity.ConversionResult;
 import com.edgarkirk.unitconv.persistence.entity.Unit;
 import com.edgarkirk.unitconv.persistence.repository.ConversionResultRepository;
 import com.edgarkirk.unitconv.persistence.repository.UnitRepository;
@@ -21,6 +22,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -40,11 +42,72 @@ class ConversionServiceTest {
     void should_returnPersistedConversionResult_when_convertMetresToFeet() {
         when(unitRepository.findByName("metres")).thenReturn(Optional.of(new Unit(UUID.randomUUID(), "metres", "metric")));
         when(unitRepository.findByName("feet")).thenReturn(Optional.of(new Unit(UUID.randomUUID(), "feet", "imperial")));
+        when(conversionResultRepository.save(any())).thenAnswer(invocation -> {
+            ConversionResult conversionResult = invocation.getArgument(0);
+            return new ConversionResult(
+                    UUID.fromString("11111111-1111-1111-1111-111111111111"),
+                    conversionResult.getInputValue(),
+                    conversionResult.getSourceUnit(),
+                    conversionResult.getTargetUnit(),
+                    conversionResult.getResult());
+        });
 
         ConversionResultResponse response = conversionService.convert(new ConversionRequest(BigDecimal.valueOf(12.5), "metres", "feet"));
 
-        assertThat(response.id()).isNotNull();
-        verify(conversionResultRepository).save(org.mockito.ArgumentMatchers.any());
+        assertThat(response.id()).isEqualTo(UUID.fromString("11111111-1111-1111-1111-111111111111"));
+        assertThat(response.inputValue()).isEqualByComparingTo("12.5");
+        assertThat(response.sourceUnit()).isEqualTo("metres");
+        assertThat(response.targetUnit()).isEqualTo("feet");
+        assertThat(response.result()).isEqualByComparingTo("41.010499");
+        verify(conversionResultRepository).save(any());
+    }
+
+    @Test
+    void should_failWhenPersistenceDoesNotReturnSavedConversionResult() {
+        when(unitRepository.findByName("metres")).thenReturn(Optional.of(new Unit(UUID.randomUUID(), "metres", "metric")));
+        when(unitRepository.findByName("feet")).thenReturn(Optional.of(new Unit(UUID.randomUUID(), "feet", "imperial")));
+        when(conversionResultRepository.save(any())).thenReturn(null);
+
+        assertThatThrownBy(() -> conversionService.convert(new ConversionRequest(BigDecimal.valueOf(12.5), "metres", "feet")))
+                .isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void should_returnConvertedValue_when_convertKilometresToMiles() {
+        when(unitRepository.findByName("kilometres")).thenReturn(Optional.of(new Unit(UUID.randomUUID(), "kilometres", "metric")));
+        when(unitRepository.findByName("miles")).thenReturn(Optional.of(new Unit(UUID.randomUUID(), "miles", "imperial")));
+        when(conversionResultRepository.save(any())).thenAnswer(invocation -> {
+            ConversionResult conversionResult = invocation.getArgument(0);
+            return new ConversionResult(
+                    UUID.fromString("22222222-2222-2222-2222-222222222222"),
+                    conversionResult.getInputValue(),
+                    conversionResult.getSourceUnit(),
+                    conversionResult.getTargetUnit(),
+                    conversionResult.getResult());
+        });
+
+        ConversionResultResponse response = conversionService.convert(new ConversionRequest(BigDecimal.valueOf(10), "kilometres", "miles"));
+
+        assertThat(response.result()).isEqualByComparingTo("6.213712");
+    }
+
+    @Test
+    void should_returnConvertedValue_when_convertLitresToGallons() {
+        when(unitRepository.findByName("litres")).thenReturn(Optional.of(new Unit(UUID.randomUUID(), "litres", "metric")));
+        when(unitRepository.findByName("gallons")).thenReturn(Optional.of(new Unit(UUID.randomUUID(), "gallons", "imperial")));
+        when(conversionResultRepository.save(any())).thenAnswer(invocation -> {
+            ConversionResult conversionResult = invocation.getArgument(0);
+            return new ConversionResult(
+                    UUID.fromString("33333333-3333-3333-3333-333333333333"),
+                    conversionResult.getInputValue(),
+                    conversionResult.getSourceUnit(),
+                    conversionResult.getTargetUnit(),
+                    conversionResult.getResult());
+        });
+
+        ConversionResultResponse response = conversionService.convert(new ConversionRequest(BigDecimal.valueOf(3), "litres", "gallons"));
+
+        assertThat(response.result()).isEqualByComparingTo("0.792516");
     }
 
     @Test

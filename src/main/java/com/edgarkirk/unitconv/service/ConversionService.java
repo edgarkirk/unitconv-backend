@@ -51,19 +51,12 @@ public class ConversionService {
         }
 
         BigDecimal result = convertValue(request.value(), sourceUnit.getName(), targetUnit.getName());
-        ConversionResult conversionResult = new ConversionResult(
+        ConversionResult saved = conversionResultRepository.save(new ConversionResult(
                 request.value(),
                 sourceUnit.getName(),
                 targetUnit.getName(),
-                result);
-        ConversionResult saved = conversionResultRepository.save(conversionResult);
-        ConversionResult responseSource = saved != null ? saved : new ConversionResult(
-                java.util.UUID.randomUUID(),
-                conversionResult.getInputValue(),
-                conversionResult.getSourceUnit(),
-                conversionResult.getTargetUnit(),
-                conversionResult.getResult());
-        return new ConversionResultResponse(responseSource.getId(), responseSource.getInputValue(), responseSource.getSourceUnit(), responseSource.getTargetUnit(), responseSource.getResult());
+                result));
+        return new ConversionResultResponse(saved.getId(), saved.getInputValue(), saved.getSourceUnit(), saved.getTargetUnit(), saved.getResult());
     }
 
     public List<UnitResponse> listUnits() {
