@@ -1,6 +1,5 @@
 package com.edgarkirk.unitconv.persistence.entity;
 
-import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,19 +7,22 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.util.Objects;
+import java.util.UUID;
+
 @Entity
 @Table(name = "unit")
 public class UnitEntity {
 
     @Id
-    @UuidGenerator
     @GeneratedValue
+    @UuidGenerator
     private UUID id;
 
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 32)
     private String system;
 
     protected UnitEntity() {
@@ -54,5 +56,21 @@ public class UnitEntity {
 
     public void setSystem(String system) {
         this.system = system;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof UnitEntity that)) {
+            return false;
+        }
+        return id != null && id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getClass());
     }
 }
