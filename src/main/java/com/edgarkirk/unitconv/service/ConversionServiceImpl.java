@@ -6,6 +6,7 @@ import java.util.Locale;
 
 import com.edgarkirk.unitconv.api.dto.request.ConversionRequest;
 import com.edgarkirk.unitconv.api.dto.response.ConversionResult;
+import com.edgarkirk.unitconv.mapper.ConversionResultMapper;
 import com.edgarkirk.unitconv.persistence.repository.ConversionResultRepository;
 import com.edgarkirk.unitconv.persistence.repository.UnitRepository;
 import com.edgarkirk.unitconv.service.exception.IncompatibleUnitsException;
@@ -39,18 +40,9 @@ public class ConversionServiceImpl implements ConversionService {
 
         BigDecimal result = convertValue(request.value(), sourceUnit, targetUnit);
         com.edgarkirk.unitconv.persistence.entity.ConversionResult savedResult = conversionResultRepository.save(
-                new com.edgarkirk.unitconv.persistence.entity.ConversionResult(
-                        request.value(),
-                        sourceUnit,
-                        targetUnit,
-                        result));
+                ConversionResultMapper.toEntity(request, sourceUnit, targetUnit, result));
 
-        return new ConversionResult(
-                savedResult.getId(),
-                savedResult.getInputValue(),
-                savedResult.getSourceUnit(),
-                savedResult.getTargetUnit(),
-                savedResult.getResult());
+        return ConversionResultMapper.toResponse(savedResult);
     }
 
     private BigDecimal convertValue(BigDecimal inputValue, String sourceUnit, String targetUnit) {
