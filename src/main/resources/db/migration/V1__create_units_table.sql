@@ -1,0 +1,5 @@
+CREATE TABLE units (
+    id UUID NOT NULL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    system VARCHAR(255) NOT NULL
+);
