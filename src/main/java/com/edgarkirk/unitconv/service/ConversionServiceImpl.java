@@ -37,12 +37,12 @@ class ConversionServiceImpl implements ConversionService {
             "gallons", UnitGroup.VOLUME
     );
     private static final Map<String, Map<String, ConversionRule>> CONVERSION_RULES = Map.of(
-            "metres", Map.of("feet", new ConversionRule(new BigDecimal("3.28084"), false)),
-            "feet", Map.of("metres", new ConversionRule(new BigDecimal("3.28084"), true)),
-            "kilometres", Map.of("miles", new ConversionRule(new BigDecimal("0.621371"), false)),
-            "miles", Map.of("kilometres", new ConversionRule(new BigDecimal("0.621371"), true)),
-            "litres", Map.of("gallons", new ConversionRule(new BigDecimal("0.264172"), false)),
-            "gallons", Map.of("litres", new ConversionRule(new BigDecimal("0.264172"), true))
+            "metres", Map.of("feet", new ConversionRule(new BigDecimal("3.280839895013123"), false)),
+            "feet", Map.of("metres", new ConversionRule(new BigDecimal("3.280839895013123"), true)),
+            "kilometres", Map.of("miles", new ConversionRule(new BigDecimal("0.621371192237334"), false)),
+            "miles", Map.of("kilometres", new ConversionRule(new BigDecimal("0.621371192237334"), true)),
+            "litres", Map.of("gallons", new ConversionRule(new BigDecimal("0.2641720523581484"), false)),
+            "gallons", Map.of("litres", new ConversionRule(new BigDecimal("0.2641720523581484"), true))
     );
 
     private final UnitRepository unitRepository;

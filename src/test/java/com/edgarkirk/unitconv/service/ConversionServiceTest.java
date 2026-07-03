@@ -39,20 +39,22 @@ class ConversionServiceTest {
     private ConversionServiceImpl conversionService;
 
     @Test
-    void should_returnConvertedResult_when_validMetresToFeetInput() {
+    void should_roundTripPrecisely_when_convertingMetresToFeetAndBack() {
         when(unitRepository.findByName("metres")).thenReturn(Optional.of(unit("metres", "metric")));
         when(unitRepository.findByName("feet")).thenReturn(Optional.of(unit("feet", "imperial")));
         when(conversionResultRepository.save(any(ConversionResultEntity.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        ConversionResultResponse response = conversionService.convert(
-                new ConversionRequest(new BigDecimal("10"), "metres", "feet"));
+        ConversionResultResponse forwardResponse = conversionService.convert(
+                new ConversionRequest(new BigDecimal("5"), "metres", "feet"));
 
-        assertThat(response)
-                .usingRecursiveComparison()
-                .ignoringFields("id")
-                .isEqualTo(new ConversionResultResponse(null, new BigDecimal("10"), "metres", "feet", new BigDecimal("32.8084")));
-        verify(conversionResultRepository, times(1)).save(any(ConversionResultEntity.class));
+        assertThat(forwardResponse.result()).isEqualByComparingTo(new BigDecimal("16.404199"));
+
+        ConversionResultResponse reverseResponse = conversionService.convert(
+                new ConversionRequest(forwardResponse.result(), "feet", "metres"));
+
+        assertThat(reverseResponse.result()).isEqualByComparingTo(new BigDecimal("5"));
+        verify(conversionResultRepository, times(2)).save(any(ConversionResultEntity.class));
     }
 
     @Test
