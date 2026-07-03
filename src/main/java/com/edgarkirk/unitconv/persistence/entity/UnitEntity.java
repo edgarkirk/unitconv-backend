@@ -17,10 +17,10 @@ public class UnitEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 50)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private String system;
 
     protected UnitEntity() {
@@ -53,5 +53,21 @@ public class UnitEntity {
 
     public void setSystem(String system) {
         this.system = system;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof UnitEntity that)) {
+            return false;
+        }
+        return id != null && id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

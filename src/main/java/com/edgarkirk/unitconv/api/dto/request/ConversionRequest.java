@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record ConversionRequest(
-        @NotNull BigDecimal value,
-        @NotBlank String sourceUnit,
-        @NotBlank String targetUnit) {
+        @NotNull(message = "Missing required field: value") BigDecimal value,
+        @NotBlank(message = "Missing required field: sourceUnit") String sourceUnit,
+        @NotBlank(message = "Missing required field: targetUnit") String targetUnit) {
 }
