@@ -7,7 +7,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -16,13 +15,13 @@ public class Unit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(nullable = false, updatable = false)
+    @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "name", nullable = false, unique = true, length = 50)
     private String name;
 
-    @Column(nullable = false)
+    @Column(name = "system", nullable = false, length = 20)
     private String system;
 
     protected Unit() {
