@@ -19,6 +19,8 @@ public class UnitServiceImpl implements UnitService {
 
     @Override
     public List<Unit> listUnits() {
-        throw new UnsupportedOperationException("Unit service is not implemented yet");
+        return unitRepository.findAll().stream()
+                .map(unit -> new Unit(unit.getId(), unit.getName(), unit.getSystem()))
+                .toList();
     }
 }

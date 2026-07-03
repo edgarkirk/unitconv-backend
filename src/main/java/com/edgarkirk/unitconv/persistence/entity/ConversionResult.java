@@ -7,25 +7,26 @@ import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.UuidGenerator;
 
 @Entity
 @Table(name = "conversion_results")
 public class ConversionResult {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue
+    @UuidGenerator(style = UuidGenerator.Style.TIME)
     private UUID id;
 
-    @Column(nullable = false, precision = 19, scale = 6)
+    @Column(name = "input_value", nullable = false, precision = 19, scale = 6)
     private BigDecimal inputValue;
 
-    @Column(nullable = false)
+    @Column(name = "source_unit", nullable = false, length = 255)
     private String sourceUnit;
 
-    @Column(nullable = false)
+    @Column(name = "target_unit", nullable = false, length = 255)
     private String targetUnit;
 
     @Column(nullable = false, precision = 19, scale = 6)
